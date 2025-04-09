@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dune Search | Sortphy</title>
   <link rel="icon" href="./images/sortphy.png">
+  <!-- Import canvas-confetti from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -387,8 +389,8 @@
       textDisplay.innerHTML = '<div class="loading">Carregando o texto do livro...</div>';
       resultsDisplay.innerHTML = '<div class="loading">Selecione uma palavra ou frase para buscar</div>';
       
-      // In a real application, you would load the actual book content
-      // For this demo, we'll simulate loading with some text
+      // In a real application, you would load the actual book content.
+      // For this demo, we'll simulate loading with some text.
       fetch(`books/${book}.txt`)
         .then(response => {
           if (!response.ok) {
@@ -597,6 +599,24 @@
       textDisplay.appendChild(document.createTextNode(afterText));
     }
     
+    // Function to trigger the confetti effect after the search completes
+    function triggerConfetti() {
+      // Fire a burst from the center-bottom of the window.
+      confetti({
+        particleCount: 150,
+        spread: 60,
+        origin: { y: 0.8 }
+      });
+      // Optionally, trigger additional bursts for a more dramatic effect.
+      setTimeout(() => {
+        confetti({
+          particleCount: 100,
+          spread: 100,
+          origin: { y: 0.8 }
+        });
+      }, 500);
+    }
+    
     // Function to run search benchmark
     async function runSearch(pattern) {
       if (isSearching) return;
@@ -651,33 +671,21 @@
         
         // Update positions display with "view more" if more than 5 results
         if (naiveResults.length > 0) {
-  let positionsHTML = `<p><strong>Posições encontradas:</strong></p>
-    <div id="positions-container">`;
-  naiveResults.forEach((pos, index) => {
-    // For visible items (first 5)
-    if (index < 5) {
-      // Add a comma inside the span for every element except the last one of the visible group
-      if (index < 4) {
-        positionsHTML += `<span class="position">${pos}, </span>`;
-      } else {
-        positionsHTML += `<span class="position">${pos}</span>`;
-      }
-    } else {
-      // For hidden items (after 5), also include the comma inside the span
-      if (index < naiveResults.length - 1) {
-        positionsHTML += `<span class="position hidden">${pos}, </span>`;
-      } else {
-        positionsHTML += `<span class="position hidden">${pos}</span>`;
-      }
-    }
-  });
-  positionsHTML += `</div>`;
-  if (naiveResults.length > 5) {
-    positionsHTML += `<button id="toggle-view">Ver mais</button>`;
-  }
-  resultsHTML += positionsHTML;
-}
-
+          let positionsHTML = `<p><strong>Posições encontradas:</strong></p>
+            <div id="positions-container">`;
+          naiveResults.forEach((pos, index) => {
+            if (index < 5) {
+              positionsHTML += `<span class="position">${pos}${index < 4 ? ', ' : ''}</span>`;
+            } else {
+              positionsHTML += `<span class="position hidden">${pos}${index < naiveResults.length - 1 ? ', ' : ''}</span>`;
+            }
+          });
+          positionsHTML += `</div>`;
+          if (naiveResults.length > 5) {
+            positionsHTML += `<button id="toggle-view">Ver mais</button>`;
+          }
+          resultsHTML += positionsHTML;
+        }
         
         resultsDisplay.innerHTML = resultsHTML;
         
@@ -699,6 +707,9 @@
         } else {
           textDisplay.textContent = bookContent;
         }
+        
+        // Trigger the confetti effect upon completion of search
+        triggerConfetti();
         
       } catch (error) {
         console.error('Error during search:', error);
