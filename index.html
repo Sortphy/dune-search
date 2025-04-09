@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUNE SEARCH</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .book-selection, .search-section, .results-section {
+            flex: 1;
+        }
+        .book-selection h2, .search-section h2, .results-section h2 {
+            margin-top: 0;
+        }
+        .books {
+            display: flex;
+            gap: 15px;
+        }
+        .book {
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100px;
+            position: relative;
+        }
+        .book img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .book.selected {
+            transform: scale(1.1);
+        }
+        .book.selected::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid #ff6b00;
+            box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .search-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .results-display {
+            background-color: #f0f0f0;
+            padding: 15px;
+            min-height: 200px;
+            margin-top: 10px;
+            border-radius: 5px;
+            overflow-y: auto;
+        }
+        .text-display {
+            background-color: #f8f8ff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .highlight-current {
+            background-color: #ffcc00;
+        }
+        .highlight-match {
+            background-color: #adff2f;
+        }
+        .loading {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+        .algorithm-status {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .algorithm-box {
+            flex: 1;
+            padding: 10px;
+            margin: 0 5px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-left: 10px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .delay-container {
+            display: flex;
+            align-items: center;
+        }
+        .delay-input {
+            width: 60px;
+            margin-left: 10px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>DUNE SEARCH</h1>
+    
+    <div class="main-container">
+        <div class="top-section">
+            <div class="book-selection">
+                <h2>Selecione o livro</h2>
+                <div class="books">
+                    <div class="book" data-book="dune1">
+                        <img src="images/dune1.jpg" alt="Dune">
+                    </div>
+                    <div class="book" data-book="dune2">
+                        <img src="images/dune2.jpg" alt="Dune Messiah">
+                    </div>
+                    <div class="book" data-book="dune3">
+                        <img src="images/dune3.jpg" alt="Children of Dune">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <h2>Buscar por:</h2>
+                <input type="text" class="search-input" placeholder="Digite a palavra ou frase..." value="Caladan">
+                <button class="search-btn">Buscar</button>
+                
+                <div class="control-panel">
+                    <div class="toggle-container">
+                        <span>Visualização:</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="visualization-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="delay-container">
+                        <span>Delay (ms):</span>
+                        <input type="number" id="delay-input" class="delay-input" value="10" min="0" max="1000">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <h2>Resultados:</h2>
+                <div class="results-display">
+                    <div class="loading">Selecione um livro e inicie a busca</div>
+                </div>
+                <div class="algorithm-status">
+                    <div class="algorithm-box">
+                        <div>Naive Search: <span class="naive-time">-</span></div>
+                        <div class="progress-bar"><div class="naive-progress progress-fill"></div></div>
+                    </div>
+                    <div class="algorithm-box">
+                        <div>Rabin-Karp: <span class="rk-time">-</span></div>
+                        <div class="progress-bar"><div class="rk-progress progress-fill"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-display">
+            <div class="loading">O texto do livro será exibido aqui</div>
+        </div>
+    </div>
+
+    <script>
+        // Book content will be stored here when loaded
+        let bookContent = '';
+        let selectedBook = null;
+        let isSearching = false;
+        let visualizationEnabled = true;
+        let visualizationDelay = 10; // ms
+        let updateFrequency = 1000; // Check every 1000 positions
+        
+        // DOM Elements
+        const books = document.querySelectorAll('.book');
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+        const resultsDisplay = document.querySelector('.results-display');
+        const textDisplay = document.querySelector('.text-display');
+        const naiveTimeDisplay = document.querySelector('.naive-time');
+        const rkTimeDisplay = document.querySelector('.rk-time');
+        const naiveProgress = document.querySelector('.naive-progress');
+        const rkProgress = document.querySelector('.rk-progress');
+        const visualizationToggle = document.getElementById('visualization-toggle');
+        const delayInput = document.getElementById('delay-input');
+        
+        // Set up visualization controls
+        visualizationToggle.addEventListener('change', function() {
+            visualizationEnabled = this.checked;
+            delayInput.disabled = !visualizationEnabled;
+            
+            if (!visualizationEnabled) {
+                updateFrequency = Number.MAX_SAFE_INTEGER; // Effectively disable updates
+            } else {
+                updateFrequency = 1000; // Reset to default
+                visualizationDelay = parseInt(delayInput.value) || 10;
+            }
+        });
+        
+        delayInput.addEventListener('change', function() {
+            visualizationDelay = parseInt(this.value) || 10;
+        });
+        
+        // Set up book selection
+        books.forEach(book => {
+            book.addEventListener('click', () => {
+                if (isSearching) return;
+                
+                // Update selection visual
+                books.forEach(b => b.classList.remove('selected'));
+                book.classList.add('selected');
+                
+                // Get selected book
+                selectedBook = book.dataset.book;
+                
+                // Load book content
+                loadBookContent(selectedBook);
+            });
+        });
+        
+        // Set up search button
+        searchBtn.addEventListener('click', () => {
+            if (!selectedBook) {
+                alert('Por favor, selecione um livro primeiro.');
+                return;
+            }
+            
+            if (isSearching) return;
+            
+            const searchPattern = searchInput.value.trim();
+            if (searchPattern === '') {
+                alert('Por favor, digite algo para buscar.');
+                return;
+            }
+            
+            runSearch(searchPattern);
+        });
+        
+        // Function to load book content
+        function loadBookContent(book) {
+            textDisplay.innerHTML = '<div class="loading">Carregando o texto do livro...</div>';
+            resultsDisplay.innerHTML = '<div class="loading">Selecione uma palavra ou frase para buscar</div>';
+            
+            // In a real application, you would load the actual book content
+            // For this demo, we'll simulate loading with some text
+            fetch(`books/${book}.txt`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Arquivo não encontrado');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    bookContent = text;
+                    textDisplay.textContent = text;
+                })
+                .catch(error => {
+                    console.error('Error loading book:', error);
+                    textDisplay.innerHTML = `<div class="loading">Erro ao carregar o livro: ${error.message}</div>`;
+                    
+                    // For demo purposes, load sample text if file not found
+                    bookContent = `This is sample text for ${book}. The Atreides family lived on Caladan for generations before moving to Arrakis. 
+                    Paul Atreides remembered Caladan as a planet of water and mild climate.
+                    Duke Leto often missed Caladan during his time on Dune. Caladan remained a part of the Atreides heritage.`;
+                    
+                    textDisplay.textContent = bookContent;
+                });
+        }
+        
+        // Naive Search Algorithm with visualization
+        async function naiveSearch(text, pattern, updateProgress) {
+            const occurrences = [];
+            const textLength = text.length;
+            const patternLength = pattern.length;
+            
+            // Edge cases
+            if (patternLength > textLength) return [];
+            if (patternLength === 0) return [];
+            
+            // Clear previous highlights if visualization is enabled
+            if (visualizationEnabled) {
+                updateTextDisplay(text);
+            }
+            
+            // Brute force search with visualization
+            for (let i = 0; i <= textLength - patternLength; i++) {
+                let match = true;
+                
+                // Update progress periodically if visualization is enabled
+                if (visualizationEnabled && (i % updateFrequency === 0 || i === 0)) {
+                    await new Promise(resolve => setTimeout(resolve, 0)); // Let the UI breathe
+                    updateProgress(i / (textLength - patternLength + 1));
+                    highlightCurrent(i, patternLength, 'examining');
+                }
+                
+                for (let j = 0; j < patternLength; j++) {
+                    if (text[i + j] !== pattern[j]) {
+                        match = false;
+                        break;
+                    }
+                }
+                
+                if (match) {
+                    occurrences.push(i);
+                    if (visualizationEnabled) {
+                        highlightMatch(i, patternLength);
+                        await new Promise(resolve => setTimeout(resolve, visualizationDelay));
+                    }
+                }
+            }
+            
+            // Update progress to 100% at the end
+            updateProgress(1);
+            
+            return occurrences;
+        }
+        
+        // Rabin-Karp Search Algorithm with visualization
+        async function rabinKarpSearch(text, pattern, updateProgress) {
+            const occurrences = [];
+            const textLength = text.length;
+            const patternLength = pattern.length;
+            
+            // Edge cases
+            if (patternLength > textLength) return [];
+            if (patternLength === 0) return [];
+            
+            // Clear previous highlights but keep matches from naive search
+            if (visualizationEnabled) {
+                updateTextDisplay(text, true);
+            }
+            
+            // Prime number for hash calculation
+            const prime = 101;
+            
+            // Function to calculate hash value
+            function hash(str, end) {
+                let hashValue = 0;
+                for (let i = 0; i < end; i++) {
+                    hashValue += str.charCodeAt(i) * Math.pow(prime, i);
+                }
+                return hashValue;
+            }
+            
+            // Calculate hash for pattern and initial window
+            const patternHash = hash(pattern, patternLength);
+            let textHash = hash(text, patternLength);
+            
+            // Search with visualization
+            for (let i = 0; i <= textLength - patternLength; i++) {
+                // Update progress periodically if visualization is enabled
+                if (visualizationEnabled && (i % updateFrequency === 0 || i === 0)) {
+                    await new Promise(resolve => setTimeout(resolve, 0)); // Let the UI breathe
+                    updateProgress(i / (textLength - patternLength + 1));
+                    highlightCurrent(i, patternLength, 'examining-rk');
+                }
+                
+                // Check if hash values match
+                if (patternHash === textHash) {
+                    // Verify character by character
+                    let match = true;
+                    for (let j = 0; j < patternLength; j++) {
+                        if (text[i + j] !== pattern[j]) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (match) {
+                        occurrences.push(i);
+                        if (visualizationEnabled) {
+                            highlightMatch(i, patternLength, 'match-rk');
+                            await new Promise(resolve => setTimeout(resolve, visualizationDelay));
+                        }
+                    }
+                }
+                
+                // Calculate hash for next window
+                if (i < textLength - patternLength) {
+                    // Remove leading digit, add trailing digit
+                    textHash = textHash - text.charCodeAt(i);
+                    textHash = textHash / prime;
+                    textHash += text.charCodeAt(i + patternLength) * Math.pow(prime, patternLength - 1);
+                }
+            }
+            
+            // Update progress to 100% at the end
+            updateProgress(1);
+            
+            return occurrences;
+        }
+        
+        // Function to update text display
+        function updateTextDisplay(text, keepMatches = false) {
+            if (!visualizationEnabled) {
+                textDisplay.textContent = text;
+                return;
+            }
+            
+            // If keepMatches is true, we're only clearing the current position highlight
+            if (!keepMatches) {
+                textDisplay.textContent = text;
+            } else {
+                // Remove only "examining" highlights
+                const spans = textDisplay.querySelectorAll('.highlight-current');
+                spans.forEach(span => {
+                    const textNode = document.createTextNode(span.textContent);
+                    span.parentNode.replaceChild(textNode, span);
+                });
+            }
+        }
+        
+        // Function to highlight current position being examined
+        function highlightCurrent(index, length, className = 'examining') {
+            if (!visualizationEnabled) return;
+            
+            // First, remove any previous "examining" highlights
+            const oldSpans = textDisplay.querySelectorAll('.highlight-current');
+            oldSpans.forEach(span => {
+                const textNode = document.createTextNode(span.textContent);
+                span.parentNode.replaceChild(textNode, span);
+            });
+            
+            // Create the text nodes
+            const textContent = textDisplay.textContent;
+            const beforeText = textContent.substring(0, index);
+            const highlightText = textContent.substring(index, index + length);
+            const afterText = textContent.substring(index + length);
+            
+            // Clear the display and add the new nodes
+            textDisplay.textContent = '';
+            textDisplay.appendChild(document.createTextNode(beforeText));
+            
+            const span = document.createElement('span');
+            span.className = 'highlight-current';
+            span.textContent = highlightText;
+            textDisplay.appendChild(span);
+            
+            textDisplay.appendChild(document.createTextNode(afterText));
+            
+            // Scroll to the highlight if needed
+            span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Function to highlight matches
+        function highlightMatch(index, length, className = 'match') {
+            if (!visualizationEnabled) return;
+            
+            const textContent = textDisplay.textContent;
+            
+            // Create the text nodes
+            const beforeText = textContent.substring(0, index);
+            const matchText = textContent.substring(index, index + length);
+            const afterText = textContent.substring(index + length);
+            
+            // Clear the display and add the new nodes
+            textDisplay.textContent = '';
+            textDisplay.appendChild(document.createTextNode(beforeText));
+            
+            const span = document.createElement('span');
+            span.className = 'highlight-match';
+            span.textContent = matchText;
+            textDisplay.appendChild(span);
+            
+            textDisplay.appendChild(document.createTextNode(afterText));
+        }
+        
+        // Function to run search benchmark
+        async function runSearch(pattern) {
+            if (isSearching) return;
+            isSearching = true;
+            
+            // Reset displays
+            naiveTimeDisplay.textContent = '-';
+            rkTimeDisplay.textContent = '-';
+            naiveProgress.style.width = '0%';
+            rkProgress.style.width = '0%';
+            resultsDisplay.innerHTML = '<div class="loading">Buscando...</div>';
+            
+            try {
+                // Run Naive Search
+                console.log('Running Naive Search...');
+                const naiveStartTime = performance.now();
+                
+                const naiveResults = await naiveSearch(bookContent, pattern, (progress) => {
+                    naiveProgress.style.width = `${progress * 100}%`;
+                });
+                
+                const naiveEndTime = performance.now();
+                const naiveTime = naiveEndTime - naiveStartTime;
+                naiveTimeDisplay.textContent = `${naiveTime.toFixed(2)} ms`;
+                
+                // Run Rabin-Karp Search
+                console.log('Running Rabin-Karp Search...');
+                const rkStartTime = performance.now();
+                
+                const rkResults = await rabinKarpSearch(bookContent, pattern, (progress) => {
+                    rkProgress.style.width = `${progress * 100}%`;
+                });
+                
+                const rkEndTime = performance.now();
+                const rkTime = rkEndTime - rkStartTime;
+                rkTimeDisplay.textContent = `${rkTime.toFixed(2)} ms`;
+                
+                // Display results
+                const performanceDiff = Math.abs(((naiveTime / rkTime) - 1) * 100).toFixed(2);
+                const fasterAlgo = naiveTime > rkTime ? 'Rabin-Karp' : 'Naive Search';
+                
+                const resultsMatch = naiveResults.length === rkResults.length && 
+                                    JSON.stringify(naiveResults) === JSON.stringify(rkResults);
+                
+                let resultsHTML = `
+                    <h3>Resultados da Busca:</h3>
+                    <p><strong>Termo buscado:</strong> "${pattern}"</p>
+                    <p><strong>Naive Search:</strong></p>
+                    <ul>
+                        <li>Ocorrências encontradas: ${naiveResults.length}</li>
+                        <li>Tempo de execução: ${naiveTime.toFixed(4)} ms</li>
+                    </ul>
+                    <p><strong>Rabin-Karp Search:</strong></p>
+                    <ul>
+                        <li>Ocorrências encontradas: ${rkResults.length}</li>
+                        <li>Tempo de execução: ${rkTime.toFixed(4)} ms</li>
+                    </ul>
+                    <p><strong>Diferença de performance:</strong> ${performanceDiff}% mais rápido com ${fasterAlgo}</p>
+                    <p><strong>Check de consistência:</strong> ${resultsMatch ? 'PASSOU' : 'FALHOU'}</p>
+                `;
+                
+                if (!resultsMatch) {
+                    resultsHTML += '<p class="warning">AVISO: Os algoritmos produziram resultados diferentes!</p>';
+                }
+                
+                if (naiveResults.length > 0) {
+                    resultsHTML += `<p><strong>Posições encontradas:</strong> ${naiveResults.join(', ')}</p>`;
+                }
+                
+                resultsDisplay.innerHTML = resultsHTML;
+                
+                // Highlight all matches in the final text display if visualization is enabled
+                if (visualizationEnabled) {
+                    updateTextDisplay(bookContent);
+                    for (const position of naiveResults) {
+                        highlightMatch(position, pattern.length);
+                    }
+                } else {
+                    // Just display the text without highlights if visualization is disabled
+                    textDisplay.textContent = bookContent;
+                }
+                
+            } catch (error) {
+                console.error('Error during search:', error);
+                resultsDisplay.innerHTML = `<p>Erro durante a busca: ${error.message}</p>`;
+            } finally {
+                isSearching = false;
+            }
+        }
+        
+        // Initialize with first book selected (for demo purposes)
+        if (books.length > 0) {
+            books[0].click();
+        }
+    </script>
+</body>
+</html>
