@@ -9,7 +9,7 @@
 - Icaro Botelho
 - Gustavo Martins
 - Thiago Saraiva
-- Mauro
+- Mauricio
 
 
 
