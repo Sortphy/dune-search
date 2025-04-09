@@ -651,21 +651,33 @@
         
         // Update positions display with "view more" if more than 5 results
         if (naiveResults.length > 0) {
-          let positionsHTML = `<p><strong>Posições encontradas:</strong></p>
-            <div id="positions-container">`;
-          naiveResults.forEach((pos, index) => {
-            if (index < 5) {
-              positionsHTML += `<span class="position">${pos}</span>${index < naiveResults.length - 1 && index < 4 ? ', ' : ''}`;
-            } else {
-              positionsHTML += `<span class="position hidden">${pos}</span>${index < naiveResults.length - 1 ? ', ' : ''}`;
-            }
-          });
-          positionsHTML += `</div>`;
-          if (naiveResults.length > 5) {
-            positionsHTML += `<button id="toggle-view">Ver mais</button>`;
-          }
-          resultsHTML += positionsHTML;
-        }
+  let positionsHTML = `<p><strong>Posições encontradas:</strong></p>
+    <div id="positions-container">`;
+  naiveResults.forEach((pos, index) => {
+    // For visible items (first 5)
+    if (index < 5) {
+      // Add a comma inside the span for every element except the last one of the visible group
+      if (index < 4) {
+        positionsHTML += `<span class="position">${pos}, </span>`;
+      } else {
+        positionsHTML += `<span class="position">${pos}</span>`;
+      }
+    } else {
+      // For hidden items (after 5), also include the comma inside the span
+      if (index < naiveResults.length - 1) {
+        positionsHTML += `<span class="position hidden">${pos}, </span>`;
+      } else {
+        positionsHTML += `<span class="position hidden">${pos}</span>`;
+      }
+    }
+  });
+  positionsHTML += `</div>`;
+  if (naiveResults.length > 5) {
+    positionsHTML += `<button id="toggle-view">Ver mais</button>`;
+  }
+  resultsHTML += positionsHTML;
+}
+
         
         resultsDisplay.innerHTML = resultsHTML;
         
