@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // Configuration (modify these values)
-const FILE_PATH = 'dune1.txt'; // Path to the text file to search
+const FILE_PATH = './books/dune1.txt'; // Path to the text file to search
 const SEARCH_PATTERN = 'Caladan'; // Word or phrase to search for
 
 // Naive Search Algorithm
