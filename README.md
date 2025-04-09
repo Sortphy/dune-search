@@ -5,6 +5,8 @@
 - Thiago Saraiva
 - Mauro
 
+
+
 ## Resultados:
 Buscando "**Caladan**" em **Dune 1**   
 ![image](https://github.com/user-attachments/assets/8ee428ca-54b4-4cb9-81dc-54167d7356d8)    
@@ -14,6 +16,22 @@ Buscando "**Leto**" em **Children of Dune**
 
 Buscando "**is**" em **Dune Messiah**     
 ![image](https://github.com/user-attachments/assets/0b1646f6-92fd-4837-a563-794da6131173)     
+
+
+
+## Respostas:
+
+### 🧩 Reflexão
+- Os dois algoritmos retornaram os mesmos resultados? **Resp.:** **Sim**
+- Qual algoritmo foi mais rápido? **Resp.:** **Naive Search**
+- O tamanho do texto ou do trecho buscado influencia no tempo de execução? **Resp.:** **So testei palavras ate agora**
+- Em que situações um algoritmo pode ser preferido ao outro? **Resp.:** **Nao sei**
+
+
+### 🚀 Desafios (opcional)
+- Teste com outros trechos maiores (frases, parágrafos) **Resp.:** **Ok**
+- Compare os resultados com diferentes livros. **Resp.:** **Ok**
+- Que tal tentar padrões que aparecem muito e outros que aparecem raramente? **Resp.:** **Ok posso tentar**
 
 
 
