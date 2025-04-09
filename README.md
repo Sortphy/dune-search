@@ -10,6 +10,7 @@
 - Gustavo Martins
 - Thiago Saraiva
 - Mauricio
+- Joao David
 
 
 
