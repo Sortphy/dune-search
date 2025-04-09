@@ -1,5 +1,24 @@
-# [atividade] Algoritmos de busca
+## Equipe:
+- Maruan Biasi
+- Icaro Botelho
+- Gustavo Martins
+- Thiago Saraiva
+- Mauro
 
+## Resultados:
+Buscando "Caladan" em Dune 1   
+![image](https://github.com/user-attachments/assets/8ee428ca-54b4-4cb9-81dc-54167d7356d8)    
+
+Buscando "the" em Dune 1    
+![image](https://github.com/user-attachments/assets/d5634713-d316-4ed2-ab7d-f5823a731081)
+
+
+
+
+
+-----
+
+# Explicacao da Atividade
 
 ## 1. Escolha e envie um livro
 Você deve fazer upload de um arquivo .txt com um livro completo. Algumas sugestões:
