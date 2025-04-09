@@ -6,13 +6,14 @@
 - Mauro
 
 ## Resultados:
-Buscando "Caladan" em Dune 1   
+Buscando "**Caladan**" em **Dune 1**   
 ![image](https://github.com/user-attachments/assets/8ee428ca-54b4-4cb9-81dc-54167d7356d8)    
 
-Buscando "the" em Dune 1    
-![image](https://github.com/user-attachments/assets/d5634713-d316-4ed2-ab7d-f5823a731081)
+Buscando "**Leto**" em **Children of Dune**    
+![image](https://github.com/user-attachments/assets/460da910-e45b-45d0-89af-749d9808d842)     
 
-
+Buscando "**is**" em **Dune Messiah**     
+![image](https://github.com/user-attachments/assets/0b1646f6-92fd-4837-a563-794da6131173)     
 
 
 
