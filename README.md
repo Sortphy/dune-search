@@ -30,7 +30,7 @@ Buscando "**is**" em **Dune Messiah**
 ### 🧩 Reflexão
 - Os dois algoritmos retornaram os mesmos resultados? **Resp.:** **Sim**
 - Qual algoritmo foi mais rápido? **Resp.:** **Naive Search**
-- O tamanho do texto ou do trecho buscado influencia no tempo de execução? **Resp.:** **So testei palavras ate agora**
+- O tamanho do texto ou do trecho buscado influencia no tempo de execução? **Resp.:** **Nao sei nao testei**
 - Em que situações um algoritmo pode ser preferido ao outro? **Resp.:** **Nao sei**
 
 
