@@ -15,7 +15,21 @@
     h1 {
       text-align: center;
       font-size: 2.5rem;
-      margin-bottom: 40px;
+      margin-bottom: 0;
+    }
+    /* GitHub repo link styling */
+    .repo-link {
+      text-align: center;
+      font-size: 0.8rem;
+      margin-top: 5px;
+      color: #333;
+    }
+    .repo-link a {
+      color: #333;
+      text-decoration: none;
+    }
+    .repo-link a:hover {
+      text-decoration: underline;
     }
     .main-container {
       display: flex;
@@ -86,17 +100,16 @@
       overflow-y: auto;
     }
     .text-display {
-    background-color: #e4e4e4;
-    color: #000000;
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 5px;
-    height: 400px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    position: relative;
-}
-
+      background-color: #e4e4e4;
+      color: #000000;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 5px;
+      height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      position: relative;
+    }
     .highlight-current {
       background-color: #ffcc00;
     }
@@ -197,7 +210,10 @@
       margin-left: 10px;
       padding: 5px;
     }
-
+    /* New CSS for hiding positions */
+    .hidden {
+      display: none;
+    }
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .top-section {
@@ -230,6 +246,7 @@
 </head>
 <body>
   <h1>DUNE SEARCH</h1>
+  <p class="repo-link">GitHub Repo: <a href="https://github.com/Sortphy/dune-search" target="_blank">https://github.com/Sortphy/dune-search</a></p>
   
   <div class="main-container">
     <div class="top-section">
@@ -505,16 +522,13 @@
         
         // Calculate hash for next window
         if (i < textLength - patternLength) {
-          // Remove leading digit, add trailing digit
           textHash = textHash - text.charCodeAt(i);
           textHash = textHash / prime;
           textHash += text.charCodeAt(i + patternLength) * Math.pow(prime, patternLength - 1);
         }
       }
       
-      // Update progress to 100% at the end
       updateProgress(1);
-      
       return occurrences;
     }
     
@@ -525,11 +539,9 @@
         return;
       }
       
-      // If keepMatches is true, we're only clearing the current position highlight
       if (!keepMatches) {
         textDisplay.textContent = text;
       } else {
-        // Remove only "examining" highlights
         const spans = textDisplay.querySelectorAll('.highlight-current');
         spans.forEach(span => {
           const textNode = document.createTextNode(span.textContent);
@@ -542,20 +554,17 @@
     function highlightCurrent(index, length, className = 'examining') {
       if (!visualizationEnabled) return;
       
-      // First, remove any previous "examining" highlights
       const oldSpans = textDisplay.querySelectorAll('.highlight-current');
       oldSpans.forEach(span => {
         const textNode = document.createTextNode(span.textContent);
         span.parentNode.replaceChild(textNode, span);
       });
       
-      // Create the text nodes
       const textContent = textDisplay.textContent;
       const beforeText = textContent.substring(0, index);
       const highlightText = textContent.substring(index, index + length);
       const afterText = textContent.substring(index + length);
       
-      // Clear the display and add the new nodes
       textDisplay.textContent = '';
       textDisplay.appendChild(document.createTextNode(beforeText));
       
@@ -565,8 +574,6 @@
       textDisplay.appendChild(span);
       
       textDisplay.appendChild(document.createTextNode(afterText));
-      
-      // Scroll to the highlight if needed
       span.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     
@@ -575,13 +582,10 @@
       if (!visualizationEnabled) return;
       
       const textContent = textDisplay.textContent;
-      
-      // Create the text nodes
       const beforeText = textContent.substring(0, index);
       const matchText = textContent.substring(index, index + length);
       const afterText = textContent.substring(index + length);
       
-      // Clear the display and add the new nodes
       textDisplay.textContent = '';
       textDisplay.appendChild(document.createTextNode(beforeText));
       
@@ -598,7 +602,6 @@
       if (isSearching) return;
       isSearching = true;
       
-      // Reset displays
       naiveTimeDisplay.textContent = '-';
       rkTimeDisplay.textContent = '-';
       naiveProgress.style.width = '0%';
@@ -606,35 +609,27 @@
       resultsDisplay.innerHTML = '<div class="loading">Buscando...</div>';
       
       try {
-        // Run Naive Search
         console.log('Running Naive Search...');
         const naiveStartTime = performance.now();
-        
         const naiveResults = await naiveSearch(bookContent, pattern, (progress) => {
           naiveProgress.style.width = `${progress * 100}%`;
         });
-        
         const naiveEndTime = performance.now();
         const naiveTime = naiveEndTime - naiveStartTime;
         naiveTimeDisplay.textContent = `${naiveTime.toFixed(2)} ms`;
         
-        // Run Rabin-Karp Search
         console.log('Running Rabin-Karp Search...');
         const rkStartTime = performance.now();
-        
         const rkResults = await rabinKarpSearch(bookContent, pattern, (progress) => {
           rkProgress.style.width = `${progress * 100}%`;
         });
-        
         const rkEndTime = performance.now();
         const rkTime = rkEndTime - rkStartTime;
         rkTimeDisplay.textContent = `${rkTime.toFixed(2)} ms`;
         
-        // Display results
         const performanceDiff = Math.abs(((naiveTime / rkTime) - 1) * 100).toFixed(2);
         const fasterAlgo = naiveTime > rkTime ? 'Rabin-Karp' : 'Naive Search';
-        
-        const resultsMatch = naiveResults.length === rkResults.length && 
+        const resultsMatch = naiveResults.length === rkResults.length &&
                              JSON.stringify(naiveResults) === JSON.stringify(rkResults);
         
         let resultsHTML = `
@@ -654,24 +649,42 @@
           <p><strong>Check de consistência:</strong> ${resultsMatch ? 'PASSOU' : 'FALHOU'}</p>
         `;
         
-        if (!resultsMatch) {
-          resultsHTML += '<p class="warning">AVISO: Os algoritmos produziram resultados diferentes!</p>';
-        }
-        
+        // Update positions display with "view more" if more than 5 results
         if (naiveResults.length > 0) {
-          resultsHTML += `<p><strong>Posições encontradas:</strong> ${naiveResults.join(', ')}</p>`;
+          let positionsHTML = `<p><strong>Posições encontradas:</strong></p>
+            <div id="positions-container">`;
+          naiveResults.forEach((pos, index) => {
+            if (index < 5) {
+              positionsHTML += `<span class="position">${pos}</span>${index < naiveResults.length - 1 && index < 4 ? ', ' : ''}`;
+            } else {
+              positionsHTML += `<span class="position hidden">${pos}</span>${index < naiveResults.length - 1 ? ', ' : ''}`;
+            }
+          });
+          positionsHTML += `</div>`;
+          if (naiveResults.length > 5) {
+            positionsHTML += `<button id="toggle-view">Ver mais</button>`;
+          }
+          resultsHTML += positionsHTML;
         }
         
         resultsDisplay.innerHTML = resultsHTML;
         
-        // Highlight all matches in the final text display if visualization is enabled
+        // Set up the toggle functionality for hidden positions
+        const toggleBtn = document.getElementById('toggle-view');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', () => {
+            const hiddenPositions = document.querySelectorAll('#positions-container .hidden');
+            hiddenPositions.forEach(el => el.classList.remove('hidden'));
+            toggleBtn.style.display = 'none';
+          });
+        }
+        
         if (visualizationEnabled) {
           updateTextDisplay(bookContent);
           for (const position of naiveResults) {
             highlightMatch(position, pattern.length);
           }
         } else {
-          // Just display the text without highlights if visualization is disabled
           textDisplay.textContent = bookContent;
         }
         
