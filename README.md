@@ -30,14 +30,14 @@ Buscando "**is**" em **Dune Messiah**
 ### 🧩 Reflexão
 - Os dois algoritmos retornaram os mesmos resultados? **Resp.:** **Sim**
 - Qual algoritmo foi mais rápido? **Resp.:** **Naive Search**
-- O tamanho do texto ou do trecho buscado influencia no tempo de execução? **Resp.:** **Nao sei nao testei**
-- Em que situações um algoritmo pode ser preferido ao outro? **Resp.:** **Nao sei**
+- O tamanho do texto ou do trecho buscado influencia no tempo de execução? **Resp.:** **Quase nada, no maximo 5ms**
+- Em que situações um algoritmo pode ser preferido ao outro? **Resp.:** **Rabin Karp nao serve pra nenhuma situação**
 
 
 ### 🚀 Desafios (opcional)
 - Teste com outros trechos maiores (frases, parágrafos) **Resp.:** **Ok**
 - Compare os resultados com diferentes livros. **Resp.:** **Ok**
-- Que tal tentar padrões que aparecem muito e outros que aparecem raramente? **Resp.:** **Ok posso tentar**
+- Que tal tentar padrões que aparecem muito e outros que aparecem raramente? **Resp.:** **Ok**
 
 
 
