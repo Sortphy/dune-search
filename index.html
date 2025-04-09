@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dune Search | Sortphy</title>
   <link rel="icon" href="./images/sortphy.png">
-  <!-- Import canvas-confetti from CDN -->
+  <!-- Import canvas-confetti from CDN if you need the original one elsewhere -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
@@ -216,6 +216,16 @@
     .hidden {
       display: none;
     }
+    /* Canvas styles for dune confetti */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .top-section {
@@ -247,6 +257,9 @@
   </style>
 </head>
 <body>
+  <!-- Dune Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+  
   <h1>DUNE SEARCH</h1>
   <p class="repo-link">GitHub Repo: <a href="https://github.com/Sortphy/dune-search" target="_blank">https://github.com/Sortphy/dune-search</a></p>
   
@@ -599,23 +612,110 @@
       textDisplay.appendChild(document.createTextNode(afterText));
     }
     
-    // Function to trigger the confetti effect after the search completes
-    function triggerConfetti() {
-      // Fire a burst from the center-bottom of the window.
-      confetti({
-        particleCount: 150,
-        spread: 60,
-        origin: { y: 0.8 }
-      });
-      // Optionally, trigger additional bursts for a more dramatic effect.
-      setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          spread: 100,
-          origin: { y: 0.8 }
-        });
-      }, 500);
-    }
+    // Dune-themed confetti variables and functions
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Array with dune-themed image paths; ensure these images exist in /images/dune/
+const duneImages = [
+  '/images/dune/1.png',
+  '/images/dune/2.png',
+  '/images/dune/3.png',
+  '/images/dune/4.png',
+  '/images/dune/5.png'
+];
+
+const confettiCount = 50;
+const confettiPieces = [];
+let animationFrameId;
+
+// For explosion effect, each confetti piece is spawned at the bottom center
+// and given a velocity calculated from a random angle (between 200° and 340°) 
+// and a random initial speed.
+class Confetti {
+  constructor() {
+    this.image = new Image();
+    this.image.src = duneImages[Math.floor(Math.random() * duneImages.length)];
+    // Start from the bottom-center of the canvas.
+    this.x = canvas.width / 2;
+    this.y = canvas.height;
+    // Set a random angle between 200° and 340° (in radians)
+    const angle = (200 + Math.random() * 140) * Math.PI / 180;
+    // Initial speed between 4 and 8 pixels per frame.
+    const speed = 6 + Math.random() * 4;
+    this.vx = speed * Math.cos(angle);
+    this.vy = speed * Math.sin(angle);
+    this.size = 50 + Math.random() * 24;
+    this.rotation = Math.random() * 360;
+    this.rotationSpeed = Math.random() * 5 - 1;
+    // Gravity to pull the particles down gradually.
+    this.gravity = 0.1;
+  }
+
+  update() {
+    // Update position with current velocity.
+    this.x += this.vx;
+    this.y += this.vy;
+    // Apply gravity (affects vertical velocity).
+    this.vy += this.gravity;
+    this.rotation += this.rotationSpeed;
+  }
+
+  draw() {
+    ctx.save();
+    // Translate to the current position.
+    ctx.translate(this.x, this.y);
+    // Rotate the context according to the current rotation.
+    ctx.rotate(this.rotation * Math.PI / 180);
+    // Draw the image centered at (0,0).
+    ctx.drawImage(this.image, -this.size / 2, -this.size / 2, this.size, this.size);
+    ctx.restore();
+  }
+}
+
+function initConfetti() {
+  // Clear any previous confetti pieces.
+  confettiPieces.length = 0;
+  for (let i = 0; i < confettiCount; i++) {
+    confettiPieces.push(new Confetti());
+  }
+  animateConfetti();
+}
+
+function animateConfetti() {
+  // Clear the canvas on each frame.
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  confettiPieces.forEach(piece => {
+    piece.update();
+    piece.draw();
+  });
+  // Store the requestAnimationFrame ID so we can cancel it later.
+  animationFrameId = requestAnimationFrame(animateConfetti);
+}
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// Function to stop the confetti animation
+function stopConfetti() {
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId);
+    // Optionally, clear the canvas after stopping.
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+// Function to trigger the Dune-themed confetti explosion from the bottom.
+// The confetti is animated and then stops after 5 seconds.
+function triggerConfetti() {
+  initConfetti();
+  setTimeout(stopConfetti, 2500);
+}
+
     
     // Function to run search benchmark
     async function runSearch(pattern) {
@@ -708,7 +808,7 @@
           textDisplay.textContent = bookContent;
         }
         
-        // Trigger the confetti effect upon completion of search
+        // Trigger the Dune-themed confetti effect upon completion of search
         triggerConfetti();
         
       } catch (error) {
