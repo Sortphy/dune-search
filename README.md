@@ -1,3 +1,7 @@
+#### Ao usar o site, é recomendável desconsiderar os resultados da primeira busca. Ela é mais demorada por falta de cache de texto do navegador.
+
+-------
+
 ## Este repositório é um oferecimento: 🌶️ SpiceCode CLI 🌶️
 #### https://github.com/SpiceCodeCLI/spicecode
 ![smaller1](https://github.com/user-attachments/assets/c591fc98-4099-4e11-909a-4b1798698252)
@@ -12,8 +16,6 @@
 - Mauricio
 - Joao David
 - Os dois Guilhermes
-
-
 
 ## Resultados:
 Buscando "**Caladan**" em **Dune 1**   
