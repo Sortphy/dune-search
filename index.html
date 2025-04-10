@@ -12,7 +12,7 @@
       --primary-color: #d4a373;
       --secondary-color: #fefae0;
       --accent-color: #ccd5ae;
-      --text-color: #2b2d42;
+      --text-color: #1a1a1a;
       --background-color: #f8f9fa;
       --card-background: #ffffff;
       --border-radius: 12px;
@@ -34,7 +34,7 @@
       text-align: center;
       font-size: 2.8rem;
       margin-bottom: 10px;
-      color: var(--primary-color);
+      color: #b07d4c;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
       font-weight: 700;
     }
@@ -44,11 +44,11 @@
       font-size: 0.9rem;
       margin-top: 5px;
       color: var(--text-color);
-      opacity: 0.8;
+      opacity: 0.9;
     }
 
     .repo-link a {
-      color: var(--primary-color);
+      color: #b07d4c;
       text-decoration: none;
       transition: var(--transition);
     }
@@ -89,7 +89,7 @@
 
     h2 {
       margin-top: 0;
-      color: var(--primary-color);
+      color: #b07d4c;
       font-size: 1.5rem;
       margin-bottom: 15px;
       border-bottom: 2px solid var(--accent-color);
@@ -156,7 +156,7 @@
     .search-btn {
       margin-top: 15px;
       padding: 12px 24px;
-      background-color: var(--primary-color);
+      background-color: #b07d4c;
       color: white;
       border: none;
       border-radius: var(--border-radius);
@@ -168,7 +168,7 @@
     }
 
     .search-btn:hover {
-      background-color: #c08a5e;
+      background-color: #96683e;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
@@ -210,7 +210,7 @@
     }
 
     .text-content {
-      margin-top: 40px; /* Space for the title */
+      margin-top: 40px;
       padding: 10px;
       line-height: 1.8;
       font-size: 1.1rem;
@@ -239,8 +239,8 @@
     .loading {
       text-align: center;
       font-style: italic;
-      color: var(--text-color);
-      opacity: 0.7;
+      color: #333333;
+      opacity: 0.8;
       padding: 20px;
     }
 
@@ -336,11 +336,11 @@
     }
 
     input:checked + .slider {
-      background-color: var(--primary-color);
+      background-color: #b07d4c;
     }
 
     input:focus + .slider {
-      box-shadow: 0 0 1px var(--primary-color);
+      box-shadow: 0 0 1px #b07d4c;
     }
 
     input:checked + .slider:before {
@@ -372,7 +372,7 @@
     #toggle-view {
       margin-top: 15px;
       padding: 8px 16px;
-      background-color: var(--primary-color);
+      background-color: #b07d4c;
       color: white;
       border: none;
       border-radius: var(--border-radius);
@@ -381,11 +381,10 @@
     }
 
     #toggle-view:hover {
-      background-color: #c08a5e;
+      background-color: #96683e;
       transform: translateY(-2px);
     }
 
-    /* Responsive adjustments */
     @media (max-width: 768px) {
       .top-section {
         flex-direction: column;
@@ -424,7 +423,6 @@
       }
     }
 
-    /* Animation for loading state */
     @keyframes pulse {
       0% { opacity: 0.6; }
       50% { opacity: 1; }
@@ -435,7 +433,6 @@
       animation: pulse 1.5s infinite;
     }
 
-    /* Add new loading animation */
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -458,7 +455,6 @@
       opacity: 0.7;
     }
 
-    /* Improve search results display */
     .results-container {
       background-color: var(--card-background);
       padding: 20px;
@@ -533,7 +529,6 @@
       color: white;
     }
 
-    /* Mobile improvements */
     @media (max-width: 768px) {
       .top-section {
         flex-direction: column;
@@ -573,7 +568,6 @@
       }
     }
 
-    /* Visual feedback improvements */
     .search-btn:active {
       transform: translateY(1px);
     }
@@ -582,12 +576,11 @@
       animation: highlight-pulse 2s infinite;
     }
 
-    /* Back to top button */
     .back-to-top {
       position: fixed;
       right: 20px;
       top: 20px;
-      background-color: var(--primary-color);
+      background-color: #b07d4c;
       color: white;
       width: auto;
       height: 40px;
@@ -612,7 +605,7 @@
     }
 
     .back-to-top:hover {
-      background-color: #c08a5e;
+      background-color: #96683e;
       transform: translateY(-3px);
     }
   </style>
@@ -625,10 +618,18 @@
   <!-- Back to top button -->
   <div class="back-to-top">Voltar ao topo</div>
   
+  <!-- Header section -->
+  <header style="background-color: var(--primary-color); color: var(--text-color); padding: 1.5rem; text-align: center; margin-bottom: 20px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; text-align: center;">
+      <img src="./images/sortphy.png" alt="Sortphy Logo" style="height: 100px; width: auto;">
+      <div>
+        <h1 style="margin: 0; font-size: 2.5rem; color: var(--text-color);">Buscador de Texto Dune</h1>
+        <p style="margin-top: 5px;">Feito por Sortphy - <a href="https://github.com/Sortphy/dune-search" target="_blank" style="color: var(--text-color); text-decoration: underline;">github.com/Sortphy/dune-search</a></p>
+      </div>
+    </div>
+  </header>
+  
   <div class="main-container">
-    <h1>DUNE SEARCH</h1>
-    <p class="repo-link">GitHub Repo: <a href="https://github.com/Sortphy/dune-search" target="_blank">https://github.com/Sortphy/dune-search</a></p>
-    
     <div class="top-section">
       <div class="book-selection">
         <h2>Selecione o livro</h2>
