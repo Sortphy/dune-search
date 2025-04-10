@@ -193,6 +193,9 @@
       white-space: pre-wrap;
       position: relative;
       min-height: 400px;
+      background-image: url('./images/bookpaper.jpg');
+      background-size: auto;
+      background-repeat: repeat;
     }
 
     .book-title {
@@ -214,26 +217,30 @@
       padding: 10px;
       line-height: 1.8;
       font-size: 1.1rem;
+      font-family: 'Georgia', 'Garamond', serif;
+      color: #333;
     }
 
     .highlight-current {
-      background-color: rgba(212, 163, 115, 0.3);
+      background-color: rgba(212, 163, 115, 0.5);
       padding: 2px 4px;
       border-radius: 4px;
+      color: #333;
     }
 
     .highlight-match {
-      background-color: rgba(0, 255, 0, 0.25);
+      background-color: rgba(0, 255, 0, 0.3);
       padding: 2px 4px;
       border-radius: 4px;
       transition: var(--transition);
       animation: highlight-pulse 2s infinite;
+      color: #333;
     }
 
     @keyframes highlight-pulse {
-      0% { background-color: rgba(0, 255, 0, 0.25); }
-      50% { background-color: rgba(0, 255, 0, 0.4); }
-      100% { background-color: rgba(0, 255, 0, 0.25); }
+      0% { background-color: rgba(0, 255, 0, 0.3); }
+      50% { background-color: rgba(0, 255, 0, 0.5); }
+      100% { background-color: rgba(0, 255, 0, 0.3); }
     }
 
     .loading {
