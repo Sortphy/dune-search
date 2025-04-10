@@ -650,20 +650,6 @@
         <h2>Buscar por:</h2>
         <input type="text" class="search-input" placeholder="Digite a palavra ou frase..." value="Caladan">
         <button class="search-btn">Buscar</button>
-        
-        <div class="control-panel">
-          <div class="toggle-container">
-            <span>Visualização:</span>
-            <label class="toggle-switch">
-              <input type="checkbox" id="visualization-toggle" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="delay-container">
-            <span>Delay (ms):</span>
-            <input type="number" id="delay-input" class="delay-input" value="10" min="0" max="1000">
-          </div>
-        </div>
       </div>
       
       <div class="results-section">
@@ -697,9 +683,6 @@
     let bookContent = '';
     let selectedBook = null;
     let isSearching = false;
-    let visualizationEnabled = true;
-    let visualizationDelay = 10; // ms
-    let updateFrequency = 1000; // Check every 1000 positions
     
     // DOM Elements
     const books = document.querySelectorAll('.book');
@@ -711,25 +694,6 @@
     const rkTimeDisplay = document.querySelector('.rk-time');
     const naiveProgress = document.querySelector('.naive-progress');
     const rkProgress = document.querySelector('.rk-progress');
-    const visualizationToggle = document.getElementById('visualization-toggle');
-    const delayInput = document.getElementById('delay-input');
-    
-    // Set up visualization controls
-    visualizationToggle.addEventListener('change', function() {
-      visualizationEnabled = this.checked;
-      delayInput.disabled = !visualizationEnabled;
-      
-      if (!visualizationEnabled) {
-        updateFrequency = Number.MAX_SAFE_INTEGER; // Effectively disable updates
-      } else {
-        updateFrequency = 1000; // Reset to default
-        visualizationDelay = parseInt(delayInput.value) || 10;
-      }
-    });
-    
-    delayInput.addEventListener('change', function() {
-      visualizationDelay = parseInt(this.value) || 10;
-    });
     
     // Set up book selection
     books.forEach(book => {
@@ -811,8 +775,8 @@
       }, 500); // 500ms delay for better UX
     }
     
-    // Naive Search Algorithm with visualization
-    async function naiveSearch(text, pattern, updateProgress) {
+    // Naive Search Algorithm without visualization
+    function naiveSearch(text, pattern, updateProgress) {
       const occurrences = [];
       const textLength = text.length;
       const patternLength = pattern.length;
@@ -821,21 +785,12 @@
       if (patternLength > textLength) return [];
       if (patternLength === 0) return [];
       
-      // Clear previous highlights if visualization is enabled
-      if (visualizationEnabled) {
-        updateTextDisplay(text);
-      }
+      // Update progress at the start
+      updateProgress(0);
       
-      // Brute force search with visualization
+      // Brute force search without delays
       for (let i = 0; i <= textLength - patternLength; i++) {
         let match = true;
-        
-        // Update progress periodically if visualization is enabled
-        if (visualizationEnabled && (i % updateFrequency === 0 || i === 0)) {
-          await new Promise(resolve => setTimeout(resolve, 0)); // Let the UI breathe
-          updateProgress(i / (textLength - patternLength + 1));
-          highlightCurrent(i, patternLength, 'examining');
-        }
         
         for (let j = 0; j < patternLength; j++) {
           if (text[i + j] !== pattern[j]) {
@@ -846,10 +801,6 @@
         
         if (match) {
           occurrences.push(i);
-          if (visualizationEnabled) {
-            highlightMatch(i, patternLength);
-            await new Promise(resolve => setTimeout(resolve, visualizationDelay));
-          }
         }
       }
       
@@ -859,8 +810,8 @@
       return occurrences;
     }
     
-    // Rabin-Karp Search Algorithm with visualization
-    async function rabinKarpSearch(text, pattern, updateProgress) {
+    // Rabin-Karp Search Algorithm without visualization
+    function rabinKarpSearch(text, pattern, updateProgress) {
       const occurrences = [];
       const textLength = text.length;
       const patternLength = pattern.length;
@@ -869,10 +820,8 @@
       if (patternLength > textLength) return [];
       if (patternLength === 0) return [];
       
-      // Clear previous highlights but keep matches from naive search
-      if (visualizationEnabled) {
-        updateTextDisplay(text, true);
-      }
+      // Update progress at start
+      updateProgress(0);
       
       // Prime number for hash calculation
       const prime = 101;
@@ -890,15 +839,8 @@
       const patternHash = hash(pattern, patternLength);
       let textHash = hash(text, patternLength);
       
-      // Search with visualization
+      // Search without delays
       for (let i = 0; i <= textLength - patternLength; i++) {
-        // Update progress periodically if visualization is enabled
-        if (visualizationEnabled && (i % updateFrequency === 0 || i === 0)) {
-          await new Promise(resolve => setTimeout(resolve, 0)); // Let the UI breathe
-          updateProgress(i / (textLength - patternLength + 1));
-          highlightCurrent(i, patternLength, 'examining-rk');
-        }
-        
         // Check if hash values match
         if (patternHash === textHash) {
           // Verify character by character
@@ -911,10 +853,6 @@
           }
           if (match) {
             occurrences.push(i);
-            if (visualizationEnabled) {
-              highlightMatch(i, patternLength, 'match-rk');
-              await new Promise(resolve => setTimeout(resolve, visualizationDelay));
-            }
           }
         }
         
@@ -926,17 +864,13 @@
         }
       }
       
+      // Update progress at end
       updateProgress(1);
       return occurrences;
     }
     
     // Function to update text display
     function updateTextDisplay(text, keepMatches = false) {
-      if (!visualizationEnabled) {
-        textDisplay.textContent = text;
-        return;
-      }
-      
       if (!keepMatches) {
         textDisplay.textContent = text;
       } else {
@@ -950,14 +884,6 @@
     
     // Function to highlight current position being examined
     function highlightCurrent(index, length, className = 'examining') {
-      if (!visualizationEnabled) return;
-      
-      const oldSpans = textDisplay.querySelectorAll('.highlight-current');
-      oldSpans.forEach(span => {
-        const textNode = document.createTextNode(span.textContent);
-        span.parentNode.replaceChild(textNode, span);
-      });
-      
       const textContent = textDisplay.textContent;
       const beforeText = textContent.substring(0, index);
       const highlightText = textContent.substring(index, index + length);
@@ -977,8 +903,6 @@
     
     // Function to highlight matches
     function highlightMatch(index, length, className = 'match') {
-      if (!visualizationEnabled) return;
-      
       const textContent = textDisplay.textContent;
       const beforeText = textContent.substring(0, index);
       const matchText = textContent.substring(index, index + length);
@@ -998,19 +922,15 @@
     // Function to jump to position and highlight
     function jumpToPosition(position, length) {
       const textContent = document.querySelector('.text-content');
-      const text = textContent.textContent;
       
-      // Clear previous highlights
-      const spans = textContent.querySelectorAll('.highlight-match');
-      spans.forEach(span => {
-        const textNode = document.createTextNode(span.textContent);
-        span.parentNode.replaceChild(textNode, span);
-      });
+      // First, clear all existing highlights to prevent interference
+      const originalText = bookContent;
+      textContent.textContent = originalText;
       
-      // Create new highlight
-      const beforeText = text.substring(0, position);
-      const matchText = text.substring(position, position + length);
-      const afterText = text.substring(position + length);
+      // Now create a new highlight at the correct position
+      const beforeText = originalText.substring(0, position);
+      const matchText = originalText.substring(position, position + length);
+      const afterText = originalText.substring(position + length);
       
       textContent.innerHTML = '';
       textContent.appendChild(document.createTextNode(beforeText));
@@ -1038,28 +958,34 @@
     // Function to highlight all matches
     function highlightAllMatches(positions, length) {
       const textContent = document.querySelector('.text-content');
-      const text = textContent.textContent;
       
-      // Clear previous highlights
-      const spans = textContent.querySelectorAll('.highlight-match');
-      spans.forEach(span => {
-        const textNode = document.createTextNode(span.textContent);
-        span.parentNode.replaceChild(textNode, span);
-      });
+      // Start with the original text from bookContent
+      const originalText = bookContent;
       
-      // Sort positions in descending order to avoid offset issues
-      positions.sort((a, b) => b - a);
+      // Build HTML with highlights
+      let resultHTML = '';
+      let lastIndex = 0;
       
-      let currentText = text;
+      // Sort positions in ascending order
+      positions.sort((a, b) => a - b);
+      
+      // Add each highlight
       positions.forEach(pos => {
-        const beforeText = currentText.substring(0, pos);
-        const matchText = currentText.substring(pos, pos + length);
-        const afterText = currentText.substring(pos + length);
+        // Add text before this match
+        resultHTML += originalText.substring(lastIndex, pos);
         
-        currentText = beforeText + `<span class="highlight-match">${matchText}</span>` + afterText;
+        // Add the highlighted match
+        resultHTML += `<span class="highlight-match">${originalText.substring(pos, pos + length)}</span>`;
+        
+        // Update lastIndex to after this match
+        lastIndex = pos + length;
       });
       
-      textContent.innerHTML = currentText;
+      // Add any remaining text
+      resultHTML += originalText.substring(lastIndex);
+      
+      // Set the HTML
+      textContent.innerHTML = resultHTML;
     }
 
     // Update the results display HTML
@@ -1150,7 +1076,7 @@
       }
     }
 
-    // Update the runSearch function to use the new highlighting
+    // Update the runSearch function to remove all delays
     async function runSearch(pattern) {
       if (isSearching) return;
       isSearching = true;
@@ -1166,14 +1092,14 @@
       
       try {
         const naiveStartTime = performance.now();
-        const naiveResults = await naiveSearch(bookContent, pattern, (progress) => {
+        const naiveResults = naiveSearch(bookContent, pattern, (progress) => {
           naiveProgress.style.width = `${progress * 100}%`;
         });
         const naiveEndTime = performance.now();
         const naiveTime = naiveEndTime - naiveStartTime;
         
         const rkStartTime = performance.now();
-        const rkResults = await rabinKarpSearch(bookContent, pattern, (progress) => {
+        const rkResults = rabinKarpSearch(bookContent, pattern, (progress) => {
           rkProgress.style.width = `${progress * 100}%`;
         });
         const rkEndTime = performance.now();
@@ -1181,9 +1107,8 @@
         
         updateResultsDisplay(pattern, naiveResults, rkResults, naiveTime, rkTime);
         
-        if (visualizationEnabled) {
-          highlightAllMatches(naiveResults, pattern.length);
-        }
+        // Still highlight matches after search is complete
+        highlightAllMatches(naiveResults, pattern.length);
         
       } catch (error) {
         console.error('Error during search:', error);
