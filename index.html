@@ -8,66 +8,121 @@
   <!-- Import canvas-confetti from CDN if you need the original one elsewhere -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
+    :root {
+      --primary-color: #d4a373;
+      --secondary-color: #fefae0;
+      --accent-color: #ccd5ae;
+      --text-color: #2b2d42;
+      --background-color: #f8f9fa;
+      --card-background: #ffffff;
+      --border-radius: 12px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
     }
+
     h1 {
       text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 0;
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
     }
-    /* GitHub repo link styling */
+
     .repo-link {
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       margin-top: 5px;
-      color: #333;
+      color: var(--text-color);
+      opacity: 0.8;
     }
+
     .repo-link a {
-      color: #333;
+      color: var(--primary-color);
       text-decoration: none;
+      transition: var(--transition);
     }
+
     .repo-link a:hover {
       text-decoration: underline;
+      opacity: 1;
     }
+
     .main-container {
       display: flex;
       flex-direction: column;
       gap: 30px;
+      margin-top: 30px;
     }
+
     .top-section {
       display: flex;
       justify-content: space-between;
       gap: 20px;
+      background-color: var(--card-background);
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
     }
+
     .book-selection, .search-section, .results-section {
       flex: 1;
+      background-color: var(--secondary-color);
+      padding: 20px;
+      border-radius: var(--border-radius);
     }
-    .book-selection h2, .search-section h2, .results-section h2 {
+
+    .book-selection:hover, .search-section:hover, .results-section:hover {
+      transform: none;
+      box-shadow: var(--box-shadow);
+    }
+
+    h2 {
       margin-top: 0;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 8px;
     }
+
     .books {
       display: flex;
-      gap: 15px;
+      gap: 20px;
       flex-wrap: wrap;
+      justify-content: center;
     }
+
     .book {
       cursor: pointer;
-      transition: all 0.3s;
-      width: 100px;
+      width: 120px;
       position: relative;
+      border-radius: var(--border-radius);
+      overflow: hidden;
     }
+
     .book img {
       width: 100%;
       height: auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: var(--box-shadow);
+      border-radius: var(--border-radius);
     }
+
     .book.selected {
       transform: scale(1.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .book.selected::after {
       content: '';
       position: absolute;
@@ -75,107 +130,187 @@
       left: 0;
       right: 0;
       bottom: 0;
-      border: 3px solid #ff6b00;
-      box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+      border: 3px solid var(--primary-color);
+      box-shadow: 0 0 25px rgba(212, 163, 115, 0.8);
+      border-radius: var(--border-radius);
+      z-index: 1;
     }
+
     .search-input {
       width: 100%;
-      padding: 8px;
+      padding: 12px;
       font-size: 16px;
       margin-top: 10px;
+      border: 2px solid var(--accent-color);
+      border-radius: var(--border-radius);
+      background-color: var(--card-background);
+      transition: var(--transition);
     }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.2);
+    }
+
     .search-btn {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background-color: #333;
+      margin-top: 15px;
+      padding: 12px 24px;
+      background-color: var(--primary-color);
       color: white;
       border: none;
+      border-radius: var(--border-radius);
       cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: var(--transition);
+      width: 100%;
     }
+
+    .search-btn:hover {
+      background-color: #c08a5e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
     .results-display {
-      background-color: #e4e4e4;
-      padding: 15px;
+      background-color: var(--card-background);
+      padding: 20px;
       min-height: 200px;
       margin-top: 10px;
-      margin-left: 10px;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       overflow-y: auto;
+      box-shadow: var(--box-shadow);
     }
+
     .text-display {
-      background-color: #e4e4e4;
-      color: #000000;
-      padding: 20px;
+      background-color: var(--card-background);
+      color: var(--text-color);
+      padding: 25px;
       margin-top: 20px;
-      border-radius: 5px;
-      height: 400px;
-      overflow-y: auto;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
       white-space: pre-wrap;
       position: relative;
+      min-height: 400px;
     }
+
+    .book-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+      z-index: 1;
+    }
+
+    .text-content {
+      margin-top: 40px; /* Space for the title */
+      padding: 10px;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+
     .highlight-current {
-      background-color: #ffcc00;
+      background-color: rgba(212, 163, 115, 0.3);
+      padding: 2px 4px;
+      border-radius: 4px;
     }
+
     .highlight-match {
-      background-color: #adff2f;
+      background-color: rgba(0, 255, 0, 0.25);
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: var(--transition);
+      animation: highlight-pulse 2s infinite;
     }
+
+    @keyframes highlight-pulse {
+      0% { background-color: rgba(0, 255, 0, 0.25); }
+      50% { background-color: rgba(0, 255, 0, 0.4); }
+      100% { background-color: rgba(0, 255, 0, 0.25); }
+    }
+
     .loading {
       text-align: center;
       font-style: italic;
-      color: #666;
+      color: var(--text-color);
+      opacity: 0.7;
+      padding: 20px;
     }
+
     .algorithm-status {
       display: flex;
       justify-content: space-between;
-      margin-top: 10px;
+      margin-top: 20px;
+      gap: 15px;
     }
+
     .algorithm-box {
       flex: 1;
-      padding: 10px;
-      margin: 0 5px;
-      background-color: #f0f0f0;
-      border-radius: 5px;
+      padding: 15px;
+      background-color: var(--secondary-color);
+      border-radius: var(--border-radius);
       text-align: center;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
     }
+
+    .algorithm-box:hover {
+      transform: translateY(-2px);
+    }
+
     .progress-bar {
-      height: 10px;
-      background-color: #ddd;
-      border-radius: 5px;
-      margin-top: 5px;
+      height: 8px;
+      background-color: var(--card-background);
+      border-radius: 4px;
+      margin-top: 10px;
       overflow: hidden;
     }
+
     .progress-fill {
       height: 100%;
-      background-color: #4CAF50;
+      background-color: var(--primary-color);
       width: 0%;
-      transition: width 0.3s;
+      transition: width 0.3s ease;
     }
+
     .control-panel {
       display: flex;
       justify-content: space-between;
-      background-color: #f5f5f5;
-      padding: 15px;
-      border-radius: 5px;
+      background-color: var(--secondary-color);
+      padding: 20px;
+      border-radius: var(--border-radius);
       margin-top: 20px;
       flex-wrap: wrap;
+      gap: 15px;
     }
+
     .toggle-container,
     .delay-container {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      gap: 10px;
     }
+
     .toggle-switch {
       position: relative;
       display: inline-block;
       width: 60px;
       height: 34px;
-      margin-left: 10px;
     }
+
     .toggle-switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
+
     .slider {
       position: absolute;
       cursor: pointer;
@@ -187,6 +322,7 @@
       transition: .4s;
       border-radius: 34px;
     }
+
     .slider:before {
       position: absolute;
       content: "";
@@ -198,84 +334,292 @@
       transition: .4s;
       border-radius: 50%;
     }
+
     input:checked + .slider {
-      background-color: #2196F3;
+      background-color: var(--primary-color);
     }
+
     input:focus + .slider {
-      box-shadow: 0 0 1px #2196F3;
+      box-shadow: 0 0 1px var(--primary-color);
     }
+
     input:checked + .slider:before {
       transform: translateX(26px);
     }
+
     .delay-input {
-      width: 60px;
-      margin-left: 10px;
-      padding: 5px;
+      width: 80px;
+      padding: 8px;
+      border: 2px solid var(--accent-color);
+      border-radius: var(--border-radius);
+      background-color: var(--card-background);
     }
-    /* New CSS for hiding positions */
-    .hidden {
-      display: none;
+
+    .position {
+      display: inline-block;
+      padding: 4px 8px;
+      background-color: var(--secondary-color);
+      border-radius: 4px;
+      margin: 2px;
+      transition: var(--transition);
     }
-    /* Canvas styles for dune confetti */
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9999;
+
+    .position:hover {
+      background-color: var(--accent-color);
+      transform: translateY(-2px);
     }
+
+    #toggle-view {
+      margin-top: 15px;
+      padding: 8px 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    #toggle-view:hover {
+      background-color: #c08a5e;
+      transform: translateY(-2px);
+    }
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .top-section {
         flex-direction: column;
       }
+      
       .control-panel {
         flex-direction: column;
         align-items: flex-start;
       }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
     }
+
     @media (max-width: 480px) {
       h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
       }
+      
       .search-input {
         font-size: 14px;
       }
+      
       .search-btn {
         font-size: 14px;
-        padding: 6px 12px;
+        padding: 10px 20px;
       }
+      
       .algorithm-status {
         flex-direction: column;
       }
+      
       .algorithm-box {
         margin: 5px 0;
       }
     }
+
+    /* Animation for loading state */
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    .loading {
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Add new loading animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--secondary-color);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    .loading-text {
+      text-align: center;
+      margin-top: 10px;
+      color: var(--text-color);
+      opacity: 0.7;
+    }
+
+    /* Improve search results display */
+    .results-container {
+      background-color: var(--card-background);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      margin-top: 20px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent-color);
+    }
+
+    .results-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-box {
+      background-color: var(--secondary-color);
+      padding: 15px;
+      border-radius: var(--border-radius);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+
+    .positions-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .position.hidden {
+      display: none;
+    }
+
+    .position {
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: var(--secondary-color);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .position:hover {
+      background-color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+
+    .position.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    /* Mobile improvements */
+    @media (max-width: 768px) {
+      .top-section {
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      .book-selection, .search-section, .results-section {
+        padding: 15px;
+      }
+
+      .results-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-box {
+        padding: 10px;
+      }
+
+      .search-input {
+        font-size: 16px;
+        padding: 10px;
+      }
+
+      .search-btn {
+        padding: 10px;
+        font-size: 16px;
+      }
+
+      .control-panel {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .toggle-container, .delay-container {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    /* Visual feedback improvements */
+    .search-btn:active {
+      transform: translateY(1px);
+    }
+
+    .book.selected {
+      animation: pulse-selection 1.5s infinite;
+    }
+
+    @keyframes pulse-selection {
+      0% { transform: scale(1.05); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1.05); }
+    }
+
+    .highlight-match {
+      animation: highlight-pulse 2s infinite;
+    }
+
+    @keyframes highlight-pulse {
+      0% { background-color: rgba(0, 255, 0, 0.25); }
+      50% { background-color: rgba(0, 255, 0, 0.4); }
+      100% { background-color: rgba(0, 255, 0, 0.25); }
+    }
   </style>
 </head>
 <body>
-  <!-- Dune Confetti Canvas -->
+  <!-- Comment out confetti canvas for now
   <canvas id="confetti-canvas"></canvas>
-  
-  <h1>DUNE SEARCH</h1>
-  <p class="repo-link">GitHub Repo: <a href="https://github.com/Sortphy/dune-search" target="_blank">https://github.com/Sortphy/dune-search</a></p>
+  -->
   
   <div class="main-container">
+    <h1>DUNE SEARCH</h1>
+    <p class="repo-link">GitHub Repo: <a href="https://github.com/Sortphy/dune-search" target="_blank">https://github.com/Sortphy/dune-search</a></p>
+    
     <div class="top-section">
       <div class="book-selection">
         <h2>Selecione o livro</h2>
         <div class="books">
           <div class="book" data-book="dune1">
-            <img src="images/dune1.jpg" alt="Dune">
+            <img src="images/books/dune1.jpg" alt="Dune">
           </div>
           <div class="book" data-book="dune2">
-            <img src="images/dune2.jpg" alt="Dune Messiah">
+            <img src="images/books/dune2.jpg" alt="Dune Messiah">
           </div>
           <div class="book" data-book="dune3">
-            <img src="images/dune3.jpg" alt="Children of Dune">
+            <img src="images/books/dune3.jpg" alt="Children of Dune">
           </div>
         </div>
       </div>
@@ -319,7 +663,10 @@
     </div>
     
     <div class="text-display">
-      <div class="loading">O texto do livro será exibido aqui</div>
+      <div class="book-title">Selecione um livro</div>
+      <div class="text-content">
+        <div class="loading">O texto do livro será exibido aqui</div>
+      </div>
     </div>
   </div>
 
@@ -399,33 +746,47 @@
     
     // Function to load book content
     function loadBookContent(book) {
-      textDisplay.innerHTML = '<div class="loading">Carregando o texto do livro...</div>';
+      const bookTitles = {
+        'dune1': 'Dune',
+        'dune2': 'Dune Messiah',
+        'dune3': 'Children of Dune'
+      };
+      
+      const bookTitle = document.querySelector('.book-title');
+      bookTitle.textContent = bookTitles[book] || 'Selecione um livro';
+      
+      const textContent = document.querySelector('.text-content');
+      textContent.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Carregando o texto do livro...</div>
+      `;
       resultsDisplay.innerHTML = '<div class="loading">Selecione uma palavra ou frase para buscar</div>';
       
-      // In a real application, you would load the actual book content.
-      // For this demo, we'll simulate loading with some text.
-      fetch(`books/${book}.txt`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Arquivo não encontrado');
-          }
-          return response.text();
-        })
-        .then(text => {
-          bookContent = text;
-          textDisplay.textContent = text;
-        })
-        .catch(error => {
-          console.error('Error loading book:', error);
-          textDisplay.innerHTML = `<div class="loading">Erro ao carregar o livro: ${error.message}</div>`;
-          
-          // For demo purposes, load sample text if file not found
-          bookContent = `This is sample text for ${book}. The Atreides family lived on Caladan for generations before moving to Arrakis. 
-          Paul Atreides remembered Caladan as a planet of water and mild climate.
-          Duke Leto often missed Caladan during his time on Dune. Caladan remained a part of the Atreides heritage.`;
-          
-          textDisplay.textContent = bookContent;
-        });
+      // Simulate loading delay for better UX
+      setTimeout(() => {
+        fetch(`books/${book}.txt`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Arquivo não encontrado');
+            }
+            return response.text();
+          })
+          .then(text => {
+            bookContent = text;
+            textContent.textContent = text;
+          })
+          .catch(error => {
+            console.error('Error loading book:', error);
+            textContent.innerHTML = `<div class="loading">Erro ao carregar o livro: ${error.message}</div>`;
+            
+            // For demo purposes, load sample text if file not found
+            bookContent = `This is sample text for ${book}. The Atreides family lived on Caladan for generations before moving to Arrakis. 
+            Paul Atreides remembered Caladan as a planet of water and mild climate.
+            Duke Leto often missed Caladan during his time on Dune. Caladan remained a part of the Atreides heritage.`;
+            
+            textContent.textContent = bookContent;
+          });
+      }, 500); // 500ms delay for better UX
     }
     
     // Naive Search Algorithm with visualization
@@ -612,112 +973,162 @@
       textDisplay.appendChild(document.createTextNode(afterText));
     }
     
-    // Dune-themed confetti variables and functions
-const canvas = document.getElementById('confetti-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    // Function to jump to position and highlight
+    function jumpToPosition(position, length) {
+      const textContent = document.querySelector('.text-content');
+      const text = textContent.textContent;
+      
+      // Clear previous highlights
+      const spans = textContent.querySelectorAll('.highlight-match');
+      spans.forEach(span => {
+        const textNode = document.createTextNode(span.textContent);
+        span.parentNode.replaceChild(textNode, span);
+      });
+      
+      // Create new highlight
+      const beforeText = text.substring(0, position);
+      const matchText = text.substring(position, position + length);
+      const afterText = text.substring(position + length);
+      
+      textContent.innerHTML = '';
+      textContent.appendChild(document.createTextNode(beforeText));
+      
+      const span = document.createElement('span');
+      span.className = 'highlight-match';
+      span.textContent = matchText;
+      textContent.appendChild(span);
+      
+      textContent.appendChild(document.createTextNode(afterText));
+      
+      // Scroll to position
+      span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Add active class to position button
+      const positions = document.querySelectorAll('.position');
+      positions.forEach(pos => {
+        pos.classList.remove('active');
+        if (parseInt(pos.dataset.position) === position) {
+          pos.classList.add('active');
+        }
+      });
+    }
 
-// Array with dune-themed image paths; ensure these images exist in /images/dune/
-const duneImages = [
-  './images/dune/1.png',
-  './images/dune/2.png',
-  './images/dune/3.png',
-  './images/dune/4.png',
-  './images/dune/5.png'
-];
+    // Function to highlight all matches
+    function highlightAllMatches(positions, length) {
+      const textContent = document.querySelector('.text-content');
+      const text = textContent.textContent;
+      
+      // Clear previous highlights
+      const spans = textContent.querySelectorAll('.highlight-match');
+      spans.forEach(span => {
+        const textNode = document.createTextNode(span.textContent);
+        span.parentNode.replaceChild(textNode, span);
+      });
+      
+      // Sort positions in descending order to avoid offset issues
+      positions.sort((a, b) => b - a);
+      
+      let currentText = text;
+      positions.forEach(pos => {
+        const beforeText = currentText.substring(0, pos);
+        const matchText = currentText.substring(pos, pos + length);
+        const afterText = currentText.substring(pos + length);
+        
+        currentText = beforeText + `<span class="highlight-match">${matchText}</span>` + afterText;
+      });
+      
+      textContent.innerHTML = currentText;
+    }
 
-const confettiCount = 50;
-const confettiPieces = [];
-let animationFrameId;
+    // Update the results display HTML
+    function updateResultsDisplay(pattern, naiveResults, rkResults, naiveTime, rkTime) {
+      const performanceDiff = Math.abs(((naiveTime / rkTime) - 1) * 100).toFixed(2);
+      const fasterAlgo = naiveTime > rkTime ? 'Rabin-Karp' : 'Naive Search';
+      const resultsMatch = naiveResults.length === rkResults.length &&
+                           JSON.stringify(naiveResults) === JSON.stringify(rkResults);
+      
+      let resultsHTML = `
+        <div class="results-container">
+          <div class="results-header">
+            <h3>Resultados da Busca</h3>
+            <span class="search-term">"${pattern}"</span>
+          </div>
+          
+          <div class="results-stats">
+            <div class="stat-box">
+              <div class="stat-value">${naiveResults.length}</div>
+              <div class="stat-label">Ocorrências</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">${naiveTime.toFixed(2)}ms</div>
+              <div class="stat-label">Naive Search</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">${rkTime.toFixed(2)}ms</div>
+              <div class="stat-label">Rabin-Karp</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">${performanceDiff}%</div>
+              <div class="stat-label">Mais rápido com ${fasterAlgo}</div>
+            </div>
+          </div>
+          
+          <div class="consistency-check">
+            <strong>Check de consistência:</strong> ${resultsMatch ? '✅ PASSOU' : '❌ FALHOU'}
+          </div>
+      `;
+      
+      if (naiveResults.length > 0) {
+        resultsHTML += `
+          <div class="positions-section">
+            <h4>Posições encontradas:</h4>
+            <div class="positions-list" id="positions-container">
+        `;
+        
+        naiveResults.forEach((pos, index) => {
+          resultsHTML += `
+            <span class="position ${index >= 5 ? 'hidden' : ''}" 
+                  data-position="${pos}">
+              ${pos}
+            </span>`;
+        });
+        
+        resultsHTML += `</div>`;
+        
+        if (naiveResults.length > 5) {
+          resultsHTML += `
+            <button id="toggle-view" class="toggle-positions">
+              Ver mais (${naiveResults.length - 5} restantes)
+            </button>`;
+        }
+        
+        resultsHTML += `</div>`;
+      }
+      
+      resultsHTML += `</div>`;
+      resultsDisplay.innerHTML = resultsHTML;
+      
+      // Add click handlers for positions
+      const positions = document.querySelectorAll('.position');
+      positions.forEach(pos => {
+        pos.addEventListener('click', () => {
+          const position = parseInt(pos.dataset.position);
+          jumpToPosition(position, pattern.length);
+        });
+      });
+      
+      // Set up the toggle functionality for hidden positions
+      const toggleBtn = document.getElementById('toggle-view');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          const hiddenPositions = document.querySelectorAll('#positions-container .hidden');
+          hiddenPositions.forEach(el => el.classList.remove('hidden'));
+          toggleBtn.style.display = 'none';
+        });
+      }
+    }
 
-// For explosion effect, each confetti piece is spawned at the bottom center
-// and given a velocity calculated from a random angle (between 200° and 340°) 
-// and a random initial speed.
-class Confetti {
-  constructor() {
-    this.image = new Image();
-    this.image.src = duneImages[Math.floor(Math.random() * duneImages.length)];
-    // Start from the bottom-center of the canvas.
-    this.x = canvas.width / 2;
-    this.y = canvas.height;
-    // Set a random angle between 200° and 340° (in radians)
-    const angle = (200 + Math.random() * 140) * Math.PI / 180;
-    // Initial speed between 4 and 8 pixels per frame.
-    const speed = 6 + Math.random() * 4;
-    this.vx = speed * Math.cos(angle);
-    this.vy = speed * Math.sin(angle);
-    this.size = 50 + Math.random() * 24;
-    this.rotation = Math.random() * 360;
-    this.rotationSpeed = Math.random() * 5 - 1;
-    // Gravity to pull the particles down gradually.
-    this.gravity = 0.04;
-  }
-
-  update() {
-    // Update position with current velocity.
-    this.x += this.vx;
-    this.y += this.vy;
-    // Apply gravity (affects vertical velocity).
-    this.vy += this.gravity;
-    this.rotation += this.rotationSpeed;
-  }
-
-  draw() {
-    ctx.save();
-    // Translate to the current position.
-    ctx.translate(this.x, this.y);
-    // Rotate the context according to the current rotation.
-    ctx.rotate(this.rotation * Math.PI / 180);
-    // Draw the image centered at (0,0).
-    ctx.drawImage(this.image, -this.size / 2, -this.size / 2, this.size, this.size);
-    ctx.restore();
-  }
-}
-
-function initConfetti() {
-  // Clear any previous confetti pieces.
-  confettiPieces.length = 0;
-  for (let i = 0; i < confettiCount; i++) {
-    confettiPieces.push(new Confetti());
-  }
-  animateConfetti();
-}
-
-function animateConfetti() {
-  // Clear the canvas on each frame.
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  confettiPieces.forEach(piece => {
-    piece.update();
-    piece.draw();
-  });
-  // Store the requestAnimationFrame ID so we can cancel it later.
-  animationFrameId = requestAnimationFrame(animateConfetti);
-}
-
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-
-// Function to stop the confetti animation
-function stopConfetti() {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    // Optionally, clear the canvas after stopping.
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-}
-
-// Function to trigger the Dune-themed confetti explosion from the bottom.
-// The confetti is animated and then stops after 5 seconds.
-function triggerConfetti() {
-  initConfetti();
-  setTimeout(stopConfetti, 2500);
-}
-
-    
-    // Function to run search benchmark
+    // Update the runSearch function to use the new highlighting
     async function runSearch(pattern) {
       if (isSearching) return;
       isSearching = true;
@@ -726,90 +1137,31 @@ function triggerConfetti() {
       rkTimeDisplay.textContent = '-';
       naiveProgress.style.width = '0%';
       rkProgress.style.width = '0%';
-      resultsDisplay.innerHTML = '<div class="loading">Buscando...</div>';
+      resultsDisplay.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Buscando...</div>
+      `;
       
       try {
-        console.log('Running Naive Search...');
         const naiveStartTime = performance.now();
         const naiveResults = await naiveSearch(bookContent, pattern, (progress) => {
           naiveProgress.style.width = `${progress * 100}%`;
         });
         const naiveEndTime = performance.now();
         const naiveTime = naiveEndTime - naiveStartTime;
-        naiveTimeDisplay.textContent = `${naiveTime.toFixed(2)} ms`;
         
-        console.log('Running Rabin-Karp Search...');
         const rkStartTime = performance.now();
         const rkResults = await rabinKarpSearch(bookContent, pattern, (progress) => {
           rkProgress.style.width = `${progress * 100}%`;
         });
         const rkEndTime = performance.now();
         const rkTime = rkEndTime - rkStartTime;
-        rkTimeDisplay.textContent = `${rkTime.toFixed(2)} ms`;
         
-        const performanceDiff = Math.abs(((naiveTime / rkTime) - 1) * 100).toFixed(2);
-        const fasterAlgo = naiveTime > rkTime ? 'Rabin-Karp' : 'Naive Search';
-        const resultsMatch = naiveResults.length === rkResults.length &&
-                             JSON.stringify(naiveResults) === JSON.stringify(rkResults);
-        
-        let resultsHTML = `
-          <h3>Resultados da Busca:</h3>
-          <p><strong>Termo buscado:</strong> "${pattern}"</p>
-          <p><strong>Naive Search:</strong></p>
-          <ul>
-            <li>Ocorrências encontradas: ${naiveResults.length}</li>
-            <li>Tempo de execução: ${naiveTime.toFixed(4)} ms</li>
-          </ul>
-          <p><strong>Rabin-Karp Search:</strong></p>
-          <ul>
-            <li>Ocorrências encontradas: ${rkResults.length}</li>
-            <li>Tempo de execução: ${rkTime.toFixed(4)} ms</li>
-          </ul>
-          <p><strong>Diferença de performance:</strong> ${performanceDiff}% mais rápido com ${fasterAlgo}</p>
-          <p><strong>Check de consistência:</strong> ${resultsMatch ? 'PASSOU' : 'FALHOU'}</p>
-        `;
-        
-        // Update positions display with "view more" if more than 5 results
-        if (naiveResults.length > 0) {
-          let positionsHTML = `<p><strong>Posições encontradas:</strong></p>
-            <div id="positions-container">`;
-          naiveResults.forEach((pos, index) => {
-            if (index < 5) {
-              positionsHTML += `<span class="position">${pos}${index < 4 ? ', ' : ''}</span>`;
-            } else {
-              positionsHTML += `<span class="position hidden">${pos}${index < naiveResults.length - 1 ? ', ' : ''}</span>`;
-            }
-          });
-          positionsHTML += `</div>`;
-          if (naiveResults.length > 5) {
-            positionsHTML += `<button id="toggle-view">Ver mais</button>`;
-          }
-          resultsHTML += positionsHTML;
-        }
-        
-        resultsDisplay.innerHTML = resultsHTML;
-        
-        // Set up the toggle functionality for hidden positions
-        const toggleBtn = document.getElementById('toggle-view');
-        if (toggleBtn) {
-          toggleBtn.addEventListener('click', () => {
-            const hiddenPositions = document.querySelectorAll('#positions-container .hidden');
-            hiddenPositions.forEach(el => el.classList.remove('hidden'));
-            toggleBtn.style.display = 'none';
-          });
-        }
+        updateResultsDisplay(pattern, naiveResults, rkResults, naiveTime, rkTime);
         
         if (visualizationEnabled) {
-          updateTextDisplay(bookContent);
-          for (const position of naiveResults) {
-            highlightMatch(position, pattern.length);
-          }
-        } else {
-          textDisplay.textContent = bookContent;
+          highlightAllMatches(naiveResults, pattern.length);
         }
-        
-        // Trigger the Dune-themed confetti effect upon completion of search
-        triggerConfetti();
         
       } catch (error) {
         console.error('Error during search:', error);
