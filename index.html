@@ -578,24 +578,42 @@
       transform: translateY(1px);
     }
 
-    .book.selected {
-      animation: pulse-selection 1.5s infinite;
-    }
-
-    @keyframes pulse-selection {
-      0% { transform: scale(1.05); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1.05); }
-    }
-
     .highlight-match {
       animation: highlight-pulse 2s infinite;
     }
 
-    @keyframes highlight-pulse {
-      0% { background-color: rgba(0, 255, 0, 0.25); }
-      50% { background-color: rgba(0, 255, 0, 0.4); }
-      100% { background-color: rgba(0, 255, 0, 0.25); }
+    /* Back to top button */
+    .back-to-top {
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      background-color: var(--primary-color);
+      color: white;
+      width: auto;
+      height: 40px;
+      padding: 0 15px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--box-shadow);
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      background-color: #c08a5e;
+      transform: translateY(-3px);
     }
   </style>
 </head>
@@ -603,6 +621,9 @@
   <!-- Comment out confetti canvas for now
   <canvas id="confetti-canvas"></canvas>
   -->
+  
+  <!-- Back to top button -->
+  <div class="back-to-top">Voltar ao topo</div>
   
   <div class="main-container">
     <h1>DUNE SEARCH</h1>
@@ -1175,6 +1196,24 @@
     if (books.length > 0) {
       books[0].click();
     }
+    
+    // Back to top button functionality
+    const backToTopBtn = document.querySelector('.back-to-top');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    });
+    
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
   </script>
 </body>
 </html>
