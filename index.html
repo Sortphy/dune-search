@@ -644,14 +644,14 @@ class Confetti {
     // Set a random angle between 200° and 340° (in radians)
     const angle = (200 + Math.random() * 140) * Math.PI / 180;
     // Initial speed between 4 and 8 pixels per frame.
-    const speed = 8 + Math.random() * 4;
+    const speed = 4 + Math.random() * 4;
     this.vx = speed * Math.cos(angle);
     this.vy = speed * Math.sin(angle);
     this.size = 50 + Math.random() * 24;
     this.rotation = Math.random() * 360;
     this.rotationSpeed = Math.random() * 5 - 1;
     // Gravity to pull the particles down gradually.
-    this.gravity = 0.025;
+    this.gravity = 0.065;
   }
 
   update() {
