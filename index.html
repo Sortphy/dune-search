@@ -618,6 +618,9 @@
   <!-- Back to top button -->
   <div class="back-to-top">Voltar ao topo</div>
   
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1000; width: 100%; height: 100%;"></canvas>
+  
   <!-- Header section -->
   <header style="background-color: var(--primary-color); color: var(--text-color); padding: 1.5rem; text-align: center; margin-bottom: 20px; border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
     <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; text-align: center;">
@@ -659,6 +662,15 @@
         <h2>Buscar por:</h2>
         <input type="text" class="search-input" placeholder="Digite a palavra ou frase..." value="Caladan">
         <button class="search-btn">Buscar</button>
+        <div style="margin-top: 10px; display: flex; align-items: center; justify-content: flex-start;">
+          <label style="position: relative; display: inline-block; width: 40px; height: 22px; margin-right: 8px;">
+            <input type="checkbox" id="vfx-toggle" checked style="opacity: 0; width: 0; height: 0;">
+            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;">
+              <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+            </span>
+          </label>
+          <span style="font-size: 14px;">VFX</span>
+        </div>
       </div>
       
       <div class="results-section">
@@ -692,6 +704,7 @@
     let bookContent = '';
     let selectedBook = null;
     let isSearching = false;
+    let vfxEnabled = true; // Track VFX state
     
     // DOM Elements
     const books = document.querySelectorAll('.book');
@@ -703,6 +716,27 @@
     const rkTimeDisplay = document.querySelector('.rk-time');
     const naiveProgress = document.querySelector('.naive-progress');
     const rkProgress = document.querySelector('.rk-progress');
+    const vfxToggle = document.getElementById('vfx-toggle');
+    
+    // Set up VFX toggle
+    vfxToggle.addEventListener('change', function() {
+      vfxEnabled = this.checked;
+      
+      // Update the toggle appearance
+      const toggleSpan = this.nextElementSibling;
+      if (this.checked) {
+        toggleSpan.style.backgroundColor = '#b07d4c';
+        toggleSpan.querySelector('span').style.transform = 'translateX(18px)';
+      } else {
+        toggleSpan.style.backgroundColor = '#ccc';
+        toggleSpan.querySelector('span').style.transform = 'translateX(0)';
+      }
+    });
+    
+    // Initialize the toggle appearance
+    const toggleSpan = vfxToggle.nextElementSibling;
+    toggleSpan.style.backgroundColor = '#b07d4c';
+    toggleSpan.querySelector('span').style.transform = 'translateX(18px)';
     
     // Set up book selection
     books.forEach(book => {
@@ -1000,6 +1034,25 @@
       textContent.innerHTML = resultHTML;
     }
 
+    // Function to trigger confetti effect
+    function triggerConfetti() {
+      // Only run if VFX is enabled
+      if (!vfxEnabled) return;
+      
+      // Small delay to ensure algorithms are fully completed
+      setTimeout(() => {
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const myConfetti = confetti.create(confettiCanvas, { resize: true });
+        
+        myConfetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#d4a373', '#ccd5ae', '#fefae0', '#b07d4c', '#96683e']
+        });
+      }, 100); // Small delay to ensure all calculations are done
+    }
+
     // Update the results display HTML
     function updateResultsDisplay(pattern, naiveResults, rkResults, naiveTime, rkTime) {
       const performanceDiff = Math.abs(((naiveTime / rkTime) - 1) * 100).toFixed(2);
@@ -1121,6 +1174,9 @@
         
         // Still highlight matches after search is complete
         highlightAllMatches(naiveResults, pattern.length);
+        
+        // Trigger confetti effect when search completes
+        triggerConfetti();
         
       } catch (error) {
         console.error('Error during search:', error);
